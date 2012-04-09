@@ -106,13 +106,15 @@ class SpiController(object):
         self._immediate = Array('B', [Ftdi.SEND_IMMEDIATE])
         self._frequency = 0.0
 
-    def configure(self, vendor, product, interface, frequency=6.0E6):
+    def configure(self, vendor, product, interface, frequency=6.0E6,
+            loopback=False):
         """Configure the FTDI interface as a SPI master"""
         self._frequency = \
             self._ftdi.open_mpsse(vendor, product, interface,
                                   direction=self._direction,
                                   initial=self._cs_bits, # /CS all high
-                                  frequency=frequency)
+                                  frequency=frequency,
+                                  loopback=loopback)
 
     def terminate(self):
         """Close the FTDI interface"""

@@ -268,7 +268,8 @@ class Ftdi(object):
 
     def open_mpsse(self, vendor, product, interface=1,
                    index=0, serial=None, description=None,
-                   direction=0x0, initial=0x0, frequency=6.0E6, latency=16):
+                   direction=0x0, initial=0x0, frequency=6.0E6, latency=16,
+                   loopback=False):
         """Configure the interface for MPSSE mode"""
         # Open an FTDI interface
         self.open(vendor, product, interface, index, serial, description)
@@ -286,7 +287,10 @@ class Ftdi(object):
         # Configure I/O
         self.write_data(Array('B', [Ftdi.SET_BITS_LOW, initial, direction]))
         # Disable loopback
-        self.write_data(Array('B', [Ftdi.LOOPBACK_END]))
+        if loopback:
+            self.write_data(Array('B', [Ftdi.LOOPBACK_START]))
+        else:
+            self.write_data(Array('B', [Ftdi.LOOPBACK_END]))
         self.validate_mpsse()
         # Drain input buffer
         self.purge_buffers()
